@@ -1,11 +1,12 @@
 // filepath: /C:/Users/demxo/Desktop/TFC/TFC/frontend/src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Recetas from './components/Recetas';
-import Home from './components/Home';
-import About from './components/About';
-import Navbar from './components/Navbar';
-import './App.css'; // Importa el archivo CSS
+import Recetas from './pages/Recetas';
+import Home from './pages/Home';
+import About from './pages/About';
+import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
+import './assets/styles/App.css'; // Importa el archivo CSS
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/about" element={<About />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </Router>
   );

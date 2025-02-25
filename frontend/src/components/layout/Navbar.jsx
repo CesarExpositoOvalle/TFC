@@ -1,7 +1,7 @@
-// filepath: /C:/Users/demxo/Desktop/TFC/TFC/frontend/src/components/Navbar.jsx
+// filepath: /C:/Users/demxo/Desktop/TFC/TFC/frontend/src/components/layout/Navbar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css'; // Importa el archivo CSS para la barra de navegación
+import '../../assets/styles/Navbar.css'; // Importa el archivo CSS para la barra de navegación
 
 function Navbar() {
   return (
