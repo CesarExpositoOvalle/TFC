@@ -1,31 +1,26 @@
-import React, { useEffect, useState } from 'react';
+// filepath: /C:/Users/demxo/Desktop/TFC/TFC/frontend/src/App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Recetas from './components/Recetas';
+import Home from './components/Home';
+import About from './components/About';
+import Navbar from './components/Navbar';
+import './App.css'; // Importa el archivo CSS
 
 function App() {
-  const [recipes, setRecipes] = useState([]);
-
-  useEffect(() => {
-    // Llamada al backend en PHP
-    fetch('http://localhost:8800/api/recipes.php?query=pasta')
-      .then(response => response.json())
-      .then(data => {
-        console.log(data); // Agrega esto para verificar la estructura de la respuesta
-        setRecipes(data.results);
-      })
-      .catch(error => console.log("Error:", error));
-  }, []);
-
   return (
-    <div>
-      <h1>Recetas de Pasta</h1>
-      <ul>
-        {recipes.map((recipe, index) => (
-          <li key={index}>
-            <h2>{recipe.title}</h2>
-            <img src={recipe.image} alt={recipe.title} />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Router>
+      <div>
+        <Navbar />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/recetas" element={<Recetas />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 
