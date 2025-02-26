@@ -6,7 +6,7 @@ function Recetas() {
 
   useEffect(() => {
     // Llamada al backend en PHP usando axios
-    axios.get('http://localhost/TFC/backend/api/recipes.php?query=pasta')
+    axios.get('http://localhost:8000/api/recipes.php')
       .then(response => {
         console.log(response.data); // Agrega esto para verificar la estructura de la respuesta
         setRecipes(response.data.results);
