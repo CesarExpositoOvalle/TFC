@@ -1,6 +1,4 @@
 <?php
-// filepath: /C:/Users/demxo/Desktop/TFC/TFC/backend/api/recipes.php
-
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
@@ -13,17 +11,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 define('SPOONACULAR_API_KEY', '51b42182d1fa49919435b66da6eb1172');
-$query = $_GET['query'] ?? 'chicken';
+$id = $_GET['id'] ?? null;
 
-error_log("Query recibida: " . $query);
+if ($id) {
+    $url = "https://api.spoonacular.com/recipes/{$id}/information?apiKey=" . SPOONACULAR_API_KEY;
+    $response = file_get_contents($url);
 
-$url = "https://api.spoonacular.com/recipes/complexSearch?query={$query}&apiKey=" . SPOONACULAR_API_KEY;
-$response = file_get_contents($url);
-
-if ($response) {
-    $data = json_decode($response, true);
-    echo json_encode(['results' => $data['results']]);
+    if ($response) {
+        $data = json_decode($response, true);
+        echo json_encode($data);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Error al obtener la receta"]);
+    }
 } else {
-    echo json_encode(["status" => "error", "message" => "Error al obtener recetas"]);
+    echo json_encode(["status" => "error", "message" => "ID de receta no proporcionado"]);
 }
 ?>

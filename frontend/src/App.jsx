@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Recetas from './pages/Recetas';
 import Home from './pages/Home';
 import About from './pages/About';
+import PaginaReceta from './pages/PaginaReceta';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import './assets/styles/App.css'; // Importa el archivo CSS
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/recetas" element={<Recetas />} />
             <Route path="/about" element={<About />} />
+            <Route path="/receta/:id" element={<PaginaReceta />} />
           </Routes>
         </div>
         <Footer />
