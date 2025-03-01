@@ -8,6 +8,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import RegistrationPage from './components/RegistrationPage';
 import LoginPage from './components/LoginPage';
+import UserProfilePage from './components/UserProfilePage';
 import './assets/styles/App.css'; // Importa el archivo CSS
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/receta/:id" element={<PaginaReceta />} />
             <Route path="/register" element={<RegistrationPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/profile" element={<UserProfilePage />} />
           </Routes>
         </div>
         <Footer />
