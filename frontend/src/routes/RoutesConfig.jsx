@@ -1,0 +1,21 @@
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import AllDishes from '../pages/AllDishes';
+import Home from '../pages/Home';
+import Recipe from '../pages/Recipe';
+import Favorites from '../pages/Favorites';
+import MyDishes from '../pages/MyDishes';
+import Profile from '../pages/Profile';
+
+const RoutesConfig = () => (
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/allDishes" element={<AllDishes />} />
+    <Route path="/recipe:id" element={<Recipe />} />
+    <Route path="/favorites" element={<Favorites />} />
+    <Route path="/MyDishes" element={<MyDishes />} />
+    <Route path="/profile" element={<Profile />} />
+  </Routes>
+);
+
+export default RoutesConfig;

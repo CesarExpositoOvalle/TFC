@@ -1,38 +1,21 @@
-/* filepath: /C:/Users/demxo/Desktop/TFC/TFC/frontend/src/App.css */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-nav {
-  background-color: #333;
-  overflow: hidden;
-}
-
-nav ul {
-  list-style-type: none;
-  margin: 0;
+/* 1. El body y html deben ocupar el 100% de la altura */
+html, body {
+  height: 100%; /* Asegura que ocupen toda la pantalla */
+  margin: 0; /* Elimina los márgenes predeterminados */
   padding: 0;
+}
+
+/* 2. El contenedor principal debe usar flexbox para distribuir el contenido */
+.app {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Apilar los componentes (Navbar, contenido, Footer) de arriba a abajo */
+  min-height: 100vh; /* Asegura que el contenedor ocupe al menos toda la pantalla */
 }
 
-nav ul li {
-  float: left;
+/* 3. El contenedor de contenido principal debe crecer para ocupar el espacio restante */
+.main-content {
+  flex-grow: 1; /* Esto hace que el contenido principal ocupe el espacio restante */
+  padding: 1rem; /* Opcional, para dar algo de espacio alrededor del contenido */
+  overflow-y: auto; /* Permite que se haga scroll si el contenido es mayor que la pantalla */
 }
 
-nav ul li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 20px;
-  text-decoration: none;
-}
-
-nav ul li a:hover {
-  background-color: #111;
-}
-
-.content {
-  padding: 20px;
-}
