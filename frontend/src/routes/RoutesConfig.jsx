@@ -6,14 +6,16 @@ import Recipe from '../pages/Recipe';
 import Favorites from '../pages/Favorites';
 import MyDishes from '../pages/MyDishes';
 import Profile from '../pages/Profile';
+import MakeDish from '../pages/MakeDish';
 
 const RoutesConfig = () => (
   <Routes>
     <Route path="/" element={<Home />} />
-    <Route path="/allDishes" element={<AllDishes />} />
-    <Route path="/recipe:id" element={<Recipe />} />
+    <Route path="/all-dishes" element={<AllDishes />} />
+    <Route path="/recipe/:id" element={<Recipe />} />
+    <Route path="/make-dish" element={<MakeDish />} />
     <Route path="/favorites" element={<Favorites />} />
-    <Route path="/MyDishes" element={<MyDishes />} />
+    <Route path="/my-dishes" element={<MyDishes />} />
     <Route path="/profile" element={<Profile />} />
   </Routes>
 );

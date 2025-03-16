@@ -1,22 +1,15 @@
 <?php
-class Database {
-    private $host = "localhost";
-    private $db_name = "mydatabase";
-    private $username = "root";
-    private $password = "";
-    public $conn;
+// database.php
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "mi_base"; // Asegúrate de que este sea el nombre correcto de tu base de datos
 
-    public function getConnection() {
-        $this->conn = null;
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-        try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
-            $this->conn->exec("set names utf8");
-        } catch (PDOException $exception) {
-            echo "Connection error: " . $exception->getMessage();
-        }
-
-        return $this->conn;
-    }
+// Comprobar la conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
 }
 ?>
