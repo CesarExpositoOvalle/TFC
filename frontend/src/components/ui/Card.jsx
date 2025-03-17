@@ -16,7 +16,7 @@ function Card({ id, title, image, macros }) {
         src={image || noImage} 
         alt={title} 
         className="card-img" 
-        onError={(e) => { e.target.onerror = null; e.target.src = noImage; }} // Maneja el error de carga de imagen
+        onError={(e) => { e.target.onerror = null; e.target.src = noImage; }} 
       />
       <h1 className="card-title">{title}</h1>
       <div className="card-info">

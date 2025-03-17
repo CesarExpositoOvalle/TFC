@@ -1,0 +1,101 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Elimina la barra de desplazamiento */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #222; /* Fondo oscuro */
+    width: 100vw;
+}
+
+  
+  .main-container {
+    display: grid;
+    place-items: center;
+    height: 100vw; /* Ocupa toda la altura de la pantalla */
+    width: 100vw;
+}
+
+  
+  .recipe-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px;
+    background-color: #333;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 1200px; /* Limita el ancho máximo */
+  }
+  
+  .info-container {
+    grid-column: span 4;
+    grid-row: span 3;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .info-container img {
+    width: 100%;
+    height: 50%;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  
+  .ingredients-container {
+    grid-column: span 2;
+    grid-row: span 4;
+    background-color: rgba(173, 255, 47, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .macro-container {
+    grid-column: span 2;
+    grid-row: span 4;
+    background-color: rgba(255, 255, 224, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .steps-container {
+    grid-column: span 4;
+    grid-row: span 4;
+    background-color: rgba(210, 180, 140, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .recipe-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+  
+    .info-container,
+    .ingredients-container,
+    .macro-container,
+    .steps-container {
+      grid-column: span 1;
+      grid-row: auto;
+    }
+  }

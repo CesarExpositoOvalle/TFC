@@ -3,80 +3,87 @@
 .card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
-    border: 1px solid #ddd; 
-    border-radius: 12px; 
-    overflow: hidden; 
-    width: 100%; 
-    height: 400px; 
-    background-color: #333; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); 
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 100%;
+    height: 400px;
+    background-color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
     position: relative;
     cursor: pointer;
-    transition: .3s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-    transform: scale(1.05); 
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-img {
     width: 100%;
-    height: 60%; 
-    object-fit: cover; 
+    height: 60%;
+    object-fit: cover;
 }
 
 .card-title {
-    font-family: 'Shrikhand', cursive; 
-    font-size: 2vw; 
-    margin: 8px 16px; 
+    font-family: 'Shrikhand', cursive;
+    font-size: 2vw;
+    margin: 8px 16px;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1; 
-    color: white; 
+    flex-grow: 1;
+    color: white;
     width: 100%;
     overflow: hidden;
-    white-space: normal; 
-    word-wrap: break-word; 
-    text-shadow: #333 4px 4px 4px; 
-    text-transform: uppercase; 
+    white-space: normal;
+    word-wrap: break-word;
+    text-shadow: #333 4px 4px 4px;
+    text-transform: uppercase;
 }
 
 .card-info {
+    font-family: 'Shrikhand', cursive;
     font-size: 1rem;
     color: white;
     text-align: center;
-    padding: 8px;
+    padding: 16px;
     position: absolute;
-    bottom: 0;
+    bottom: 0; 
     left: 0;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.8); 
-    display: flex;
-    justify-content: space-around; 
-    opacity: 0; 
-    transition: opacity 0.3s ease; 
+    height: 32%; 
+    background-color: rgba(0, 0, 0, 0.9); 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    grid-template-rows: repeat(2, auto); 
+    justify-items: start; 
+    align-items: center; 
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .card-info div {
     display: flex;
     flex-direction: column; 
     align-items: center;
+    justify-content: center;
+    gap: 4px; 
 }
 
 .card-info div span:first-child {
-    font-weight: bold; 
+    font-weight: bold;
     font-size: 1.2rem;
 }
 
 .card-info div span:last-child {
-    font-size: 1rem; 
+    font-size: 1rem;
 }
 
 .card:hover .card-info {
-    opacity: 1; 
+    opacity: 1;
 }

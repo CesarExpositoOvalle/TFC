@@ -18,7 +18,7 @@ function extractMacros(summary) {
   const carbsMatch = summary.match(/(\d+)\s*g\s*of\s*carbohydrates/i);
   const fatsMatch = summary.match(/(\d+)\s*g\s*of\s*fat/i);
 
-  if (caloriesMatch) macros.calories = `${caloriesMatch[1]} kcal`;
+  if (caloriesMatch) macros.calories = `${caloriesMatch[1]} `;
   if (proteinMatch) macros.protein = `${proteinMatch[1]} g`;
   if (carbsMatch) macros.carbs = `${carbsMatch[1]} g`;
   if (fatsMatch) macros.fats = `${fatsMatch[1]} g`;
@@ -31,7 +31,7 @@ function CardContainer() {
 
   useEffect(() => {
     axios
-      .get("https://api.spoonacular.com/recipes/random?number=24&apiKey=51b42182d1fa49919435b66da6eb1172")
+      .get("https://api.spoonacular.com/recipes/random?number=25&apiKey=51b42182d1fa49919435b66da6eb1172")
       .then((response) => {
         const recipesWithMacros = response.data.recipes.map((recipe) => ({
           ...recipe,
