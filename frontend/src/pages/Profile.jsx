@@ -6,8 +6,8 @@ const Profile = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Hacer la solicitud GET al backend
-    axios.get('http://localhost/path/to/getUser.php') // Asegúrate de que la URL sea correcta
+    
+    axios.get('http://localhost/auth/user_data')
       .then(response => {
         if (response.data.error) {
           setError(response.data.error);

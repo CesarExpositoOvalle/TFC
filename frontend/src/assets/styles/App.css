@@ -1,21 +1,21 @@
-/* 1. El body y html deben ocupar el 100% de la altura */
+
 html, body {
-  height: 100%; /* Asegura que ocupen toda la pantalla */
-  margin: 0; /* Elimina los márgenes predeterminados */
+  height: 100%; 
+  margin: 0; 
   padding: 0;
 }
 
-/* 2. El contenedor principal debe usar flexbox para distribuir el contenido */
+
 .app {
   display: flex;
-  flex-direction: column; /* Apilar los componentes (Navbar, contenido, Footer) de arriba a abajo */
-  min-height: 100vh; /* Asegura que el contenedor ocupe al menos toda la pantalla */
+  flex-direction: column; 
+  min-height: 100vh; 
 }
 
-/* 3. El contenedor de contenido principal debe crecer para ocupar el espacio restante */
+
 .main-content {
-  flex-grow: 1; /* Esto hace que el contenido principal ocupe el espacio restante */
-  padding: 1rem; /* Opcional, para dar algo de espacio alrededor del contenido */
-  overflow-y: auto; /* Permite que se haga scroll si el contenido es mayor que la pantalla */
+  flex-grow: 1; 
+  padding: 1rem; 
+  overflow-y: auto; 
 }
 

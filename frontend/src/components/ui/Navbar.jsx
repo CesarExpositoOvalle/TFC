@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../assets/styles/Navbar.css';
 import logo from '../../assets/logo/Diseño sin título.png';
-import accountLogo from '../../assets/logo/user.png'; // Asegúrate de tener este icono en tu proyecto
+import accountLogo from '../../assets/icons/user.png'; 
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -26,15 +26,15 @@ const Navbar = () => {
           <li><Link to="/my-dishes">Mis platos</Link></li>
         </ul>
       </div>
-      <div className="navbar-right">
-        <Link to="/profile">
-          <img src={accountLogo} alt="Perfil" className="navbar-account-logo" />
-        </Link>
-      </div>
       <div className="navbar-hamburger" onClick={toggleMenu}>
         <span className="hamburger-line"></span>
         <span className="hamburger-line"></span>
         <span className="hamburger-line"></span>
+      </div>
+      <div className="navbar-right">
+        <Link to="/profile">
+          <img src={accountLogo} alt="Perfil" className="navbar-account-logo" />
+        </Link>
       </div>
     </nav>
   );

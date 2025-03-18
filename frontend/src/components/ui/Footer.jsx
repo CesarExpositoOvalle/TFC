@@ -1,6 +1,5 @@
-// filepath: /C:/Users/demxo/Desktop/TFC/TFC/frontend/src/components/layout/Footer.jsx
 import React from 'react';
-import '../../assets/styles/Footer.css'; // Importa el archivo CSS para el footer
+import '../../assets/styles/Footer.css'; 
 
 function Footer() {
   return (

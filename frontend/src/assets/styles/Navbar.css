@@ -76,13 +76,22 @@
 }
 
 @media (max-width: 768px) {
-  .navbar-center,
-  .navbar-right {
-    display: none;
+  .navbar-center {
+    display: none; 
   }
 
   .navbar-hamburger {
-    display: flex;
+    display: flex; 
+  }
+
+  .navbar-right {
+    display: flex; 
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .navbar-right img {
+    margin-left: 40px; 
   }
 
   .navbar-center.open {

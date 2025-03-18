@@ -21,7 +21,6 @@ function Recipe() {
     return <p>Cargando datos de la receta...</p>; 
   }
 
-  // Función para extraer macros del summary
   const extractMacros = (summary) => {
     const macros = {
       calories: "N/A",
