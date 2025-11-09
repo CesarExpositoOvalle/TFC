@@ -3,7 +3,7 @@
 $servername = "db";
 $username = "root";
 $password = "root";
-$dbname = "mi_base"; 
+$dbname = "recetas_web"; 
 
 
 $conn = new mysqli($servername, $username, $password, $dbname);

@@ -1,23 +1,40 @@
 <?php
+// Permitir que React acceda sin problemas de CORS
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Content-Type: application/json");
 
-include '../config/database.php'; 
+// Conectar con la base de datos usando database.php
+require_once __DIR__ . '/../config/database.php';
 
-$user_email = "demxo18@gmail.com"; 
+// Seleccionamos el admin por ahora
+$query = "SELECT * FROM usuarios WHERE nombre_usuario = 'admin'";
+$result = $conn->query($query);
 
-$sql = $conn->prepare("SELECT * FROM users WHERE email = ?");
-$sql->bind_param("s", $user_email); 
-$sql->execute();
-$result = $sql->get_result();
+if ($result && $result->num_rows > 0) {
+    $row = $result->fetch_assoc();
 
-if ($result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-    echo json_encode($user); 
+    // Mapear los campos EXACTAMENTE como están en la tabla
+    $data = [
+        "id" => (int)$row['id'],
+        "nombre_usuario" => $row['nombre_usuario'],
+        "correo" => $row['correo'],
+        "contrasena" => "********", // no mostrar la contraseña real
+        "edad" => (int)$row['edad'],
+        "altura_cm" => (int)$row['altura_cm'],
+        "peso_kg" => (float)$row['peso_kg'],
+        "actividad" => $row['actividad'],
+        "objetivo" => $row['objetivo'],
+        "genero" => $row['genero'],
+        "rol" => $row['rol'],
+        "calorias_diarias" => $row['calorias_diarias'],
+        "proteinas_diarias" => $row['proteinas_diarias'],
+        "grasas_diarias" => $row['grasas_diarias'],
+        "carbohidratos_diarias" => $row['carbohidratos_diarias'],
+        "fecha_registro" => $row['fecha_registro']
+    ];
+
+    echo json_encode($data);
 } else {
-    echo json_encode(['error' => 'Usuario no encontrado']);
+    echo json_encode(["error" => "No se encontró el usuario"]);
 }
-
-$conn->close();
 ?>
