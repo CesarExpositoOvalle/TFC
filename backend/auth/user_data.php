@@ -1,6 +1,7 @@
 <?php
 session_start();
 header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
@@ -22,57 +23,51 @@ $result = $stmt->get_result();
 if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
-    $peso = floatval($row['peso_kg']);
-    $altura = floatval($row['altura_cm']);
-    $edad = intval($row['edad']);
+    // Calcular calorías y macros
+    $tdee = 0;
+    $proteinas = 0;
+    $grasas = 0;
+    $carbohidratos = 0;
+
+    $peso = (float)$row['peso_kg'];
+    $altura = (float)$row['altura_cm'];
+    $edad = (int)$row['edad'];
     $genero = $row['genero'];
     $actividad = $row['actividad'];
     $objetivo = $row['objetivo'];
 
-    // 1️⃣ Calcular BMR
-    if ($genero === 'male') {
-        $bmr = 10 * $peso + 6.25 * $altura - 5 * $edad + 5;
-    } else {
-        $bmr = 10 * $peso + 6.25 * $altura - 5 * $edad - 161;
+    if ($peso && $altura && $edad && $genero) {
+        // BMR usando Mifflin-St Jeor
+        $bmr = $genero === "male" 
+            ? 10 * $peso + 6.25 * $altura - 5 * $edad + 5
+            : 10 * $peso + 6.25 * $altura - 5 * $edad - 161;
+
+        // Factor de actividad
+        $actividad_factor = [
+            "sedentario" => 1.2,
+            "ligero" => 1.375,
+            "moderado" => 1.55,
+            "intenso" => 1.725,
+            "muy_intenso" => 1.9
+        ];
+        $tdee = $bmr * ($actividad_factor[$actividad] ?? 1.2);
+
+        // Ajustar por objetivo
+        if ($objetivo === "bajar_peso") $tdee -= 500;
+        if ($objetivo === "ganar_musculo") $tdee += 300;
+
+        // Macronutrientes aproximados
+        $proteinas = round($peso * 2); // 2g por kg de peso
+        $grasas = round($tdee * 0.25 / 9); // 25% calorías de grasa
+        $carbohidratos = round(($tdee - ($proteinas * 4 + $grasas * 9)) / 4);
     }
 
-    // 2️⃣ Factor de actividad
-    $activity_factors = [
-        "sedentario" => 1.2,
-        "ligero" => 1.375,
-        "moderado" => 1.55,
-        "intenso" => 1.725,
-        "muy_intenso" => 1.9
-    ];
-    $tdee = $bmr * ($activity_factors[$actividad] ?? 1.2);
-
-    // 3️⃣ Ajuste por objetivo
-    if ($objetivo === "bajar_peso") $tdee *= 0.8;
-    if ($objetivo === "ganar_musculo") $tdee *= 1.15;
-
-    // 4️⃣ Macronutrientes
-    $proteinas = $peso * 2; // g
-    $grasas = ($tdee * 0.25) / 9; // g
-    $carbohidratos = ($tdee - ($proteinas*4 + $grasas*9)) / 4;
-
-    $data = [
-        "id" => intval($row['id']),
-        "nombre_usuario" => $row['nombre_usuario'],
-        "correo" => $row['correo'],
-        "edad" => $edad,
-        "altura_cm" => $altura,
-        "peso_kg" => $peso,
-        "actividad" => $actividad,
-        "objetivo" => $objetivo,
-        "genero" => $genero,
+    echo json_encode(array_merge($row, [
         "tdee" => round($tdee),
-        "proteinas_diarias" => round($proteinas),
-        "grasas_diarias" => round($grasas),
-        "carbohidratos_diarias" => round($carbohidratos)
-    ];
-
-    echo json_encode($data);
-
+        "proteinas_diarias" => $proteinas,
+        "grasas_diarias" => $grasas,
+        "carbohidratos_diarias" => $carbohidratos
+    ]));
 } else {
     echo json_encode(["error" => "Usuario no encontrado"]);
 }

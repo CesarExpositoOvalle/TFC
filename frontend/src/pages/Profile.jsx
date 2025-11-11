@@ -9,15 +9,10 @@ export default function Profile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Cargar datos del usuario
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/auth/user_data.php", {
-          withCredentials: true,
-        });
-        console.log("User data response:", res.data);
-
+        const res = await axios.get("http://localhost:8000/auth/user_data.php", { withCredentials: true });
         if (res.data.error) {
           navigate("/login");
         } else {
@@ -29,27 +24,19 @@ export default function Profile() {
         navigate("/login");
       }
     };
-
     fetchUser();
   }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditData(prev => ({
-      ...prev,
-      [name]: name === "edad" || name === "altura_cm" || name === "peso_kg" ? Number(value) : value
-    }));
+    setEditData(prev => ({ ...prev, [name]: value }));
     setSuccess("");
     setError("");
   };
 
   const handleSave = async () => {
     try {
-      const res = await axios.put("http://localhost:8000/auth/update_user.php", editData, {
-        withCredentials: true,
-      });
-      console.log("Update response:", res.data);
-
+      const res = await axios.put("http://localhost:8000/auth/update_user.php", editData, { withCredentials: true });
       if (res.data.success) {
         setSuccess("Datos actualizados correctamente ✅");
         setUserData(editData);
@@ -60,9 +47,7 @@ export default function Profile() {
   };
 
   const handleLogout = async () => {
-    try {
-      await axios.post("http://localhost:8000/auth/logout.php", {}, { withCredentials: true });
-    } catch {}
+    try { await axios.post("http://localhost:8000/auth/logout.php", {}, { withCredentials: true }); } catch {}
     navigate("/login");
   };
 
@@ -72,17 +57,14 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#1e1e1e] text-white flex justify-center py-10">
       <div className="bg-[#2b2b2b] p-8 rounded-2xl shadow-xl w-[500px]">
-        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">
-          Perfil de Usuario
-        </h2>
+        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">Perfil de Usuario</h2>
 
-        {/* Formulario editable */}
         <div className="space-y-4">
-          {["nombre_usuario", "correo", "edad", "altura_cm", "peso_kg"].map(f => (
+          {["nombre_usuario","correo","edad","altura_cm","peso_kg"].map(f => (
             <div key={f}>
-              <label className="block text-sm mb-1">{f.replace("_", " ")}</label>
+              <label className="block text-sm mb-1">{f.replace("_"," ")}</label>
               <input
-                type={f.includes("edad") || f.includes("altura") || f.includes("peso") ? "number" : "text"}
+                type={f.includes("edad")||f.includes("altura")||f.includes("peso")?"number":"text"}
                 name={f}
                 value={editData[f] ?? ""}
                 onChange={handleChange}
@@ -92,9 +74,9 @@ export default function Profile() {
           ))}
 
           {[
-            { name: "actividad", options: ["sedentario","ligero","moderado","intenso","muy_intenso"] },
-            { name: "objetivo", options: ["mantener_peso","bajar_peso","ganar_musculo"] },
-            { name: "genero", options: ["male","female"] }
+            {name:"actividad", options:["sedentario","ligero","moderado","intenso","muy_intenso"]},
+            {name:"objetivo", options:["mantener_peso","bajar_peso","ganar_musculo"]},
+            {name:"genero", options:["male","female"]}
           ].map(s => (
             <div key={s.name}>
               <label className="block text-sm mb-1">{s.name}</label>
@@ -111,37 +93,27 @@ export default function Profile() {
           ))}
         </div>
 
-        {/* Recomendaciones nutricionales */}
-        {userData.tdee && (
-          <div className="nutrition-container mt-4 p-4 bg-[#1a1a1a] rounded">
-            <h3 className="text-lg font-bold text-orange-500 mb-2">Recomendaciones Nutricionales</h3>
-            <p>Calorías diarias: {userData.tdee} kcal</p>
-            <p>Proteínas: {userData.proteinas_diarias} g</p>
-            <p>Grasas: {userData.grasas_diarias} g</p>
-            <p>Carbohidratos: {userData.carbohidratos_diarias} g</p>
-          </div>
-        )}
-
-        {/* Mensajes */}
         {error && <p className="text-red-500 mt-3">{error}</p>}
         {success && <p className="text-green-500 mt-3">{success}</p>}
 
-        {/* Botones */}
         <div className="flex justify-between mt-6">
-          <button
-            onClick={handleSave}
-            className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded font-semibold transition"
-          >
+          <button onClick={handleSave} className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded font-semibold transition">
             Guardar Cambios
           </button>
-
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded font-semibold transition"
-          >
+          <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded font-semibold transition">
             Cerrar Sesión
           </button>
         </div>
+
+        {userData.tdee && (
+        <div className="nutrition-container mt-6 p-4 bg-[#1a1a1a] rounded">
+          <h3 className="text-lg font-bold text-orange-500 mb-2">Recomendaciones Nutricionales</h3>
+          <p>Calorías diarias: {userData.tdee} kcal</p>
+          <p>Proteínas: {userData.proteinas_diarias} g</p>
+          <p>Grasas: {userData.grasas_diarias} g</p>
+          <p>Carbohidratos: {userData.carbohidratos_diarias} g</p>
+        </div>
+        )}
       </div>
     </div>
   );

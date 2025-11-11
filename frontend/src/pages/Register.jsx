@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Register() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -16,9 +16,8 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!form.username || !form.email || !form.password) {
-      setError("Todos los campos son obligatorios.");
+      setError("Completa todos los campos.");
       return;
     }
 
@@ -31,16 +30,13 @@ export default function Register() {
       });
 
       const data = await res.json();
-      console.log("Register response:", data);
-
       if (data.success) {
-        setSuccess("Registro exitoso. Redirigiendo al login...");
-        setTimeout(() => navigate("/login"), 2000);
+        setSuccess(data.message);
+        setTimeout(() => navigate("/login"), 1500); // redirige al login
       } else {
         setError(data.message || "Error al registrar usuario.");
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Error de conexión con el servidor.");
     }
   };
@@ -48,7 +44,7 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1e1e] text-white">
       <div className="bg-[#2b2b2b] p-8 rounded-2xl w-[380px] shadow-lg">
-        <h2 className="text-2xl font-bold mb-4 text-center text-orange-500">Registro</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-orange-500">Register</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -61,7 +57,7 @@ export default function Register() {
           <input
             type="email"
             name="email"
-            placeholder="Correo"
+            placeholder="Email"
             value={form.email}
             onChange={handleChange}
             className="w-full p-3 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
@@ -69,20 +65,25 @@ export default function Register() {
           <input
             type="password"
             name="password"
-            placeholder="Contraseña"
+            placeholder="Password"
             value={form.password}
             onChange={handleChange}
             className="w-full p-3 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
           />
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {success && <p className="text-green-500 text-sm">{success}</p>}
-          <button
-            type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 py-3 rounded text-white font-semibold transition"
-          >
-            Registrarse
+          <button className="w-full bg-orange-500 hover:bg-orange-600 py-3 rounded text-white font-semibold transition">
+            Register
           </button>
         </form>
+
+        {/* Enlace a Login */}
+        <p className="text-center text-sm mt-4 text-gray-300">
+          Ya tienes cuenta?{" "}
+          <Link to="/login" className="text-orange-500 hover:underline">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

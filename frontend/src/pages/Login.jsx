@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "", remember: false });
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Cargar email guardado en cookie
   useEffect(() => {
     const match = document.cookie.split("; ").find(row => row.startsWith("remember_email="));
     if (match) {
@@ -23,8 +22,6 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-
     if (!form.email || !form.password) {
       setError("Completa ambos campos.");
       return;
@@ -37,25 +34,12 @@ export default function Login() {
         credentials: "include",
         body: JSON.stringify(form),
       });
+
       const data = await res.json();
-      console.log("Login response:", data);
+      if (!data.success) { setError(data.message); return; }
 
-      if (!data.success) {
-        setError(data.message || "Error al iniciar sesión.");
-        return;
-      }
-
-      // Guardar email si "Recordarme"
-      if (form.remember) {
-        document.cookie = `remember_email=${encodeURIComponent(form.email)}; max-age=${60*60*24*30}; path=/`;
-      } else {
-        document.cookie = "remember_email=; max-age=0; path=/";
-      }
-
-      // Redirigir al perfil
       navigate("/profile");
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Error de conexión con el servidor.");
     }
   };
@@ -66,20 +50,20 @@ export default function Login() {
         <h2 className="text-2xl font-bold mb-4 text-center text-orange-500">Log In</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            className="w-full p-3 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
             type="email"
             name="email"
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
+            className="w-full p-3 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
           />
           <input
-            className="w-full p-3 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
             type="password"
             name="password"
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
+            className="w-full p-3 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
           />
           <label className="flex items-center text-sm gap-2">
             <input
@@ -96,6 +80,14 @@ export default function Login() {
             Log In
           </button>
         </form>
+
+        {/* Enlace a Register */}
+        <p className="text-center text-sm mt-4 text-gray-300">
+          No tienes cuenta?{" "}
+          <Link to="/register" className="text-orange-500 hover:underline">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );
