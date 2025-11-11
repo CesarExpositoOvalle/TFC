@@ -9,6 +9,7 @@ export default function Profile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Cargar datos del usuario
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -34,7 +35,10 @@ export default function Profile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditData(prev => ({ ...prev, [name]: value }));
+    setEditData(prev => ({
+      ...prev,
+      [name]: name === "edad" || name === "altura_cm" || name === "peso_kg" ? Number(value) : value
+    }));
     setSuccess("");
     setError("");
   };
@@ -57,9 +61,7 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8000/auth/logout.php", {}, {
-        withCredentials: true,
-      });
+      await axios.post("http://localhost:8000/auth/logout.php", {}, { withCredentials: true });
     } catch {}
     navigate("/login");
   };
@@ -70,8 +72,11 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#1e1e1e] text-white flex justify-center py-10">
       <div className="bg-[#2b2b2b] p-8 rounded-2xl shadow-xl w-[500px]">
-        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">Perfil de Usuario</h2>
+        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">
+          Perfil de Usuario
+        </h2>
 
+        {/* Formulario editable */}
         <div className="space-y-4">
           {["nombre_usuario", "correo", "edad", "altura_cm", "peso_kg"].map(f => (
             <div key={f}>
@@ -106,9 +111,22 @@ export default function Profile() {
           ))}
         </div>
 
+        {/* Recomendaciones nutricionales */}
+        {userData.tdee && (
+          <div className="nutrition-container mt-4 p-4 bg-[#1a1a1a] rounded">
+            <h3 className="text-lg font-bold text-orange-500 mb-2">Recomendaciones Nutricionales</h3>
+            <p>Calorías diarias: {userData.tdee} kcal</p>
+            <p>Proteínas: {userData.proteinas_diarias} g</p>
+            <p>Grasas: {userData.grasas_diarias} g</p>
+            <p>Carbohidratos: {userData.carbohidratos_diarias} g</p>
+          </div>
+        )}
+
+        {/* Mensajes */}
         {error && <p className="text-red-500 mt-3">{error}</p>}
         {success && <p className="text-green-500 mt-3">{success}</p>}
 
+        {/* Botones */}
         <div className="flex justify-between mt-6">
           <button
             onClick={handleSave}
