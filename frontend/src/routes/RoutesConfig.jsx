@@ -9,7 +9,6 @@ import Profile from '../pages/Profile';
 import MakeDish from '../pages/MakeDish';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
-import ProtectedRoute from '../components/ProtectedRoute';
 
 
 const RoutesConfig = () => (
@@ -20,7 +19,7 @@ const RoutesConfig = () => (
     <Route path="/make-dish" element={<MakeDish />} />
     <Route path="/favorites" element={<Favorites />} />
     <Route path="/my-dishes" element={<MyDishes />} />
-  <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+    <Route path="/profile" element={<Profile />} />
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} /> 
   </Routes>

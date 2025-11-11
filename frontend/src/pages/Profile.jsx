@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -8,7 +8,6 @@ export default function Profile() {
   const [editData, setEditData] = useState({});
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [redirectToLogin, setRedirectToLogin] = useState(false);
 
   // ==== CARGAR DATOS DEL USUARIO ====
   useEffect(() => {
@@ -19,15 +18,14 @@ export default function Profile() {
           { withCredentials: true }
         );
 
-        if (res.data && res.data.error) {
-          // Marca para redirigir de forma declarativa
-          setRedirectToLogin(true);
+        if (res.data.error) {
+          navigate("/login"); // Redirige al login si no hay sesión
         } else {
           setUserData(res.data);
           setEditData(res.data);
         }
       } catch {
-        setRedirectToLogin(true); // Redirige si falla la conexión
+        navigate("/login"); // Redirige si falla la conexión
       }
     };
 
@@ -67,9 +65,6 @@ export default function Profile() {
     } catch {}
     navigate("/login"); // Redirige al login tras cerrar sesión
   };
-
-  // Si detectamos que no hay sesión, redirigimos al login de forma declarativa
-  if (redirectToLogin) return <Navigate to="/login" replace />;
 
   if (error) return <div className="text-red-500 p-6">{error}</div>;
   if (!userData) return <div className="text-gray-300 p-6">Cargando...</div>;
