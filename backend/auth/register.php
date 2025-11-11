@@ -1,25 +1,22 @@
 <?php
-// Evitar que errores rompan el JSON
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/error.log');
 
-// CORS y preflight OPTIONS
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
-// Manejar preflight request OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-// Conexión a la base de datos
 require_once __DIR__ . '/../config/database.php';
+session_start();
 
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -27,7 +24,6 @@ $username = trim($data["username"] ?? "");
 $email = trim($data["email"] ?? "");
 $password = trim($data["password"] ?? "");
 
-// Validaciones básicas
 if (!$username || !$email || !$password) {
     echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios."]);
     exit;
@@ -39,7 +35,6 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 try {
-    // Verificar si el usuario o correo ya existe
     $checkStmt = $conn->prepare("SELECT id FROM usuarios WHERE nombre_usuario = ? OR correo = ?");
     $checkStmt->bind_param("ss", $username, $email);
     $checkStmt->execute();
@@ -52,7 +47,6 @@ try {
 
     $hashed = password_hash($password, PASSWORD_BCRYPT);
 
-    // Insertar usuario
     $stmt = $conn->prepare("INSERT INTO usuarios (nombre_usuario, correo, contrasena, rol, fecha_registro) VALUES (?, ?, ?, 'usuario', NOW())");
     $stmt->bind_param("sss", $username, $email, $hashed);
 
@@ -65,3 +59,4 @@ try {
 } catch (Exception $e) {
     echo json_encode(["success" => false, "message" => "Error del servidor: " . $e->getMessage()]);
 }
+?>

@@ -1,12 +1,11 @@
 <?php
 session_start();
-header("Access-Control-Allow-Origin: http://localhost:5173"); // o tu dominio frontend
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
 require_once __DIR__ . '/../config/database.php';
 
-// Si no hay sesión activa, avisamos
 if (!isset($_SESSION["user_id"])) {
     echo json_encode(["error" => "No hay sesión activa."]);
     exit;
@@ -22,7 +21,6 @@ $result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
-
     $data = [
         "id" => (int)$row['id'],
         "nombre_usuario" => $row['nombre_usuario'],
@@ -40,7 +38,6 @@ if ($result && $result->num_rows > 0) {
         "carbohidratos_diarias" => $row['carbohidratos_diarias'],
         "fecha_registro" => $row['fecha_registro']
     ];
-
     echo json_encode($data);
 } else {
     echo json_encode(["error" => "Usuario no encontrado"]);

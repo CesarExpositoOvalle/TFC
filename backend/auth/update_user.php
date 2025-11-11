@@ -1,11 +1,17 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: PUT, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
-session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 require_once __DIR__ . '/../config/database.php';
 
 if (!isset($_SESSION["user_id"])) {
@@ -16,35 +22,50 @@ if (!isset($_SESSION["user_id"])) {
 $data = json_decode(file_get_contents("php://input"), true);
 $id = $_SESSION["user_id"];
 
-try {
-    $pdo = getDatabaseConnection();
+// Declarar variables para bind_param
+$nombre_usuario = $data["nombre_usuario"] ?? "";
+$correo = $data["correo"] ?? "";
+$edad = $data["edad"] ?? 0;
+$altura_cm = $data["altura_cm"] ?? 0;
+$peso_kg = $data["peso_kg"] ?? 0;
+$actividad = $data["actividad"] ?? "";
+$objetivo = $data["objetivo"] ?? "";
+$genero = $data["genero"] ?? "";
 
-    $stmt = $pdo->prepare("
+try {
+    $stmt = $conn->prepare("
         UPDATE usuarios SET 
-            nombre_usuario = :nombre_usuario,
-            correo = :correo,
-            edad = :edad,
-            altura_cm = :altura_cm,
-            peso_kg = :peso_kg,
-            actividad = :actividad,
-            objetivo = :objetivo,
-            genero = :genero
-        WHERE id = :id
+            nombre_usuario = ?,
+            correo = ?,
+            edad = ?,
+            altura_cm = ?,
+            peso_kg = ?,
+            actividad = ?,
+            objetivo = ?,
+            genero = ?
+        WHERE id = ?
     ");
 
-    $stmt->execute([
-        ":nombre_usuario" => $data["nombre_usuario"] ?? null,
-        ":correo" => $data["correo"] ?? null,
-        ":edad" => $data["edad"] ?? null,
-        ":altura_cm" => $data["altura_cm"] ?? null,
-        ":peso_kg" => $data["peso_kg"] ?? null,
-        ":actividad" => $data["actividad"] ?? null,
-        ":objetivo" => $data["objetivo"] ?? null,
-        ":genero" => $data["genero"] ?? null,
-        ":id" => $id
-    ]);
+    $stmt->bind_param(
+        "ssiissssi",
+        $nombre_usuario,
+        $correo,
+        $edad,
+        $altura_cm,
+        $peso_kg,
+        $actividad,
+        $objetivo,
+        $genero,
+        $id
+    );
 
-    echo json_encode(["success" => true]);
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Datos actualizados correctamente."]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Error al actualizar: " . $stmt->error]);
+    }
+
 } catch (Exception $e) {
-    echo json_encode(["success" => false, "message" => "Error: " . $e->getMessage()]);
+    echo json_encode(["success" => false, "message" => "Error del servidor: " . $e->getMessage()]);
 }
+?>

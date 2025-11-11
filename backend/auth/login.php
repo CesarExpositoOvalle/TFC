@@ -1,18 +1,15 @@
 <?php
-// Evitar que errores rompan el JSON
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/error.log');
 
-// CORS y preflight OPTIONS
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
-// Manejar preflight OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -33,7 +30,6 @@ if (!$email || !$password) {
 }
 
 try {
-    // Buscar usuario
     $stmt = $conn->prepare("SELECT * FROM usuarios WHERE correo = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -45,12 +41,10 @@ try {
         exit;
     }
 
-    // Guardar sesión
     $_SESSION["user_id"] = $user["id"];
     $_SESSION["username"] = $user["nombre_usuario"];
     $_SESSION["rol"] = $user["rol"];
 
-    // Cookie “remember me”
     if ($remember) {
         setcookie("remember_email", $email, time() + (86400 * 30), "/", "", false, true);
     } else {
@@ -70,3 +64,4 @@ try {
 } catch (Exception $e) {
     echo json_encode(["success" => false, "message" => "Error del servidor: " . $e->getMessage()]);
 }
+?>

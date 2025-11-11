@@ -6,6 +6,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Cargar email guardado en cookie
   useEffect(() => {
     const match = document.cookie.split("; ").find(row => row.startsWith("remember_email="));
     if (match) {
@@ -13,6 +14,12 @@ export default function Login() {
       setForm(f => ({ ...f, email, remember: true }));
     }
   }, []);
+
+  const handleChange = (e) => {
+    const { name, type, value, checked } = e.target;
+    setForm(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    setError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,16 +37,23 @@ export default function Login() {
         credentials: "include",
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
+      console.log("Login response:", data);
 
       if (!data.success) {
-        setError(data.message);
+        setError(data.message || "Error al iniciar sesión.");
         return;
       }
 
-      // Redirigir al perfil o página principal
-      navigate("/profile"); // o "/" para la página inicial
+      // Guardar email si "Recordarme"
+      if (form.remember) {
+        document.cookie = `remember_email=${encodeURIComponent(form.email)}; max-age=${60*60*24*30}; path=/`;
+      } else {
+        document.cookie = "remember_email=; max-age=0; path=/";
+      }
+
+      // Redirigir al perfil
+      navigate("/profile");
     } catch (err) {
       console.error(err);
       setError("Error de conexión con el servidor.");

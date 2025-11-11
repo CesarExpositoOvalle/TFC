@@ -9,23 +9,23 @@ export default function Profile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // ==== CARGAR DATOS DEL USUARIO ====
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/auth/user_data.php`,
-          { withCredentials: true }
-        );
+        const res = await axios.get("http://localhost:8000/auth/user_data.php", {
+          withCredentials: true,
+        });
+        console.log("User data response:", res.data);
 
         if (res.data.error) {
-          navigate("/login"); // Redirige al login si no hay sesión
+          navigate("/login");
         } else {
           setUserData(res.data);
           setEditData(res.data);
         }
-      } catch {
-        navigate("/login"); // Redirige si falla la conexión
+      } catch (err) {
+        console.error(err);
+        navigate("/login");
       }
     };
 
@@ -34,22 +34,22 @@ export default function Profile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditData((prev) => ({ ...prev, [name]: value }));
+    setEditData(prev => ({ ...prev, [name]: value }));
     setSuccess("");
     setError("");
   };
 
   const handleSave = async () => {
     try {
-      const res = await axios.put(
-        `${import.meta.env.VITE_API_URL}/auth/update_user.php`,
-        editData,
-        { withCredentials: true }
-      );
+      const res = await axios.put("http://localhost:8000/auth/update_user.php", editData, {
+        withCredentials: true,
+      });
+      console.log("Update response:", res.data);
+
       if (res.data.success) {
         setSuccess("Datos actualizados correctamente ✅");
         setUserData(editData);
-      } else setError(res.data.message);
+      } else setError(res.data.message || "Error al actualizar datos.");
     } catch {
       setError("Error al guardar los cambios.");
     }
@@ -57,13 +57,11 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/logout.php`,
-        {},
-        { withCredentials: true }
-      );
+      await axios.post("http://localhost:8000/auth/logout.php", {}, {
+        withCredentials: true,
+      });
     } catch {}
-    navigate("/login"); // Redirige al login tras cerrar sesión
+    navigate("/login");
   };
 
   if (error) return <div className="text-red-500 p-6">{error}</div>;
@@ -72,33 +70,27 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#1e1e1e] text-white flex justify-center py-10">
       <div className="bg-[#2b2b2b] p-8 rounded-2xl shadow-xl w-[500px]">
-        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">
-          Perfil de Usuario
-        </h2>
+        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">Perfil de Usuario</h2>
 
-        {/* Formulario editable */}
         <div className="space-y-4">
-          {["nombre_usuario", "correo", "edad", "altura_cm", "peso_kg"].map(
-            (f) => (
-              <div key={f}>
-                <label className="block text-sm mb-1">{f.replace("_", " ")}</label>
-                <input
-                  type={f.includes("edad") || f.includes("altura") || f.includes("peso") ? "number" : "text"}
-                  name={f}
-                  value={editData[f] ?? ""}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
-                />
-              </div>
-            )
-          )}
+          {["nombre_usuario", "correo", "edad", "altura_cm", "peso_kg"].map(f => (
+            <div key={f}>
+              <label className="block text-sm mb-1">{f.replace("_", " ")}</label>
+              <input
+                type={f.includes("edad") || f.includes("altura") || f.includes("peso") ? "number" : "text"}
+                name={f}
+                value={editData[f] ?? ""}
+                onChange={handleChange}
+                className="w-full p-2 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
+              />
+            </div>
+          ))}
 
-          {/* Selects para actividad, objetivo y género */}
           {[
             { name: "actividad", options: ["sedentario","ligero","moderado","intenso","muy_intenso"] },
             { name: "objetivo", options: ["mantener_peso","bajar_peso","ganar_musculo"] },
             { name: "genero", options: ["male","female"] }
-          ].map((s) => (
+          ].map(s => (
             <div key={s.name}>
               <label className="block text-sm mb-1">{s.name}</label>
               <select
@@ -108,19 +100,15 @@ export default function Profile() {
                 className="w-full p-2 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
               >
                 <option value="">Seleccionar...</option>
-                {s.options.map((o) => (
-                  <option key={o} value={o}>{o}</option>
-                ))}
+                {s.options.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
             </div>
           ))}
         </div>
 
-        {/* Mensajes */}
         {error && <p className="text-red-500 mt-3">{error}</p>}
         {success && <p className="text-green-500 mt-3">{success}</p>}
 
-        {/* Botones */}
         <div className="flex justify-between mt-6">
           <button
             onClick={handleSave}
