@@ -1,24 +1,32 @@
 <?php
-// Permitir que React acceda sin problemas de CORS
-header("Access-Control-Allow-Origin: *");
+session_start();
+header("Access-Control-Allow-Origin: http://localhost:5173"); // o tu dominio frontend
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
-// Conectar con la base de datos usando database.php
 require_once __DIR__ . '/../config/database.php';
 
-// Seleccionamos el admin por ahora
-$query = "SELECT * FROM usuarios WHERE nombre_usuario = 'admin'";
-$result = $conn->query($query);
+// Si no hay sesión activa, avisamos
+if (!isset($_SESSION["user_id"])) {
+    echo json_encode(["error" => "No hay sesión activa."]);
+    exit;
+}
+
+$user_id = $_SESSION["user_id"];
+
+$query = "SELECT * FROM usuarios WHERE id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
-    // Mapear los campos EXACTAMENTE como están en la tabla
     $data = [
         "id" => (int)$row['id'],
         "nombre_usuario" => $row['nombre_usuario'],
         "correo" => $row['correo'],
-        "contrasena" => "********", // no mostrar la contraseña real
         "edad" => (int)$row['edad'],
         "altura_cm" => (int)$row['altura_cm'],
         "peso_kg" => (float)$row['peso_kg'],
@@ -35,6 +43,6 @@ if ($result && $result->num_rows > 0) {
 
     echo json_encode($data);
 } else {
-    echo json_encode(["error" => "No se encontró el usuario"]);
+    echo json_encode(["error" => "Usuario no encontrado"]);
 }
 ?>

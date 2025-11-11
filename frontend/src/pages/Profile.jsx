@@ -1,101 +1,147 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate, Navigate } from "react-router-dom";
 
-const Profile = () => {
+export default function Profile() {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
-  const [error, setError] = useState(null);
+  const [editData, setEditData] = useState({});
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [redirectToLogin, setRedirectToLogin] = useState(false);
 
-  // Función para calcular calorías diarias según datos del usuario
-  const calcularCaloriasDiarias = (userData) => {
-    if (!userData) return 0;
+  // ==== CARGAR DATOS DEL USUARIO ====
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/auth/user_data.php`,
+          { withCredentials: true }
+        );
 
-    const { genero, altura_cm, peso_kg, edad, actividad, objetivo } = userData;
-    const peso = parseFloat(peso_kg);
-
-    let TMB = genero === "male"
-      ? (10 * peso) + (6.25 * altura_cm) - (5 * edad) + 5
-      : (10 * peso) + (6.25 * altura_cm) - (5 * edad) - 161;
-
-    const factoresActividad = {
-      sedentario: 1.2,
-      ligero: 1.375,
-      moderado: 1.55,
-      intenso: 1.725,
-      muy_intenso: 1.9
+        if (res.data && res.data.error) {
+          // Marca para redirigir de forma declarativa
+          setRedirectToLogin(true);
+        } else {
+          setUserData(res.data);
+          setEditData(res.data);
+        }
+      } catch {
+        setRedirectToLogin(true); // Redirige si falla la conexión
+      }
     };
 
-    let calorias = TMB * (factoresActividad[actividad] || 1.2);
+    fetchUser();
+  }, [navigate]);
 
-    if (objetivo === "bajar_peso") calorias -= 400;
-    if (objetivo === "ganar_musculo") calorias += 400;
-
-    return Math.round(calorias);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({ ...prev, [name]: value }));
+    setSuccess("");
+    setError("");
   };
 
-  // Función para calcular macros diarias
-  const calcularMacrosDiarios = (userData, caloriasDiarias) => {
-    if (!userData || !caloriasDiarias) return { proteinas: 0, grasas: 0, carbohidratos: 0 };
-
-    const peso = parseFloat(userData.peso_kg);
-
-    // Proteínas: 2 g por kg de peso
-    const proteinas = Math.round(peso * 2); // en gramos
-
-    // Grasas: 25% de las calorías totales, 1g de grasa = 9 kcal
-    const grasas = Math.round((caloriasDiarias * 0.25) / 9);
-
-    // Carbohidratos: calorías restantes, 1g carbohidrato = 4 kcal
-    const caloriasProteinas = proteinas * 4;
-    const caloriasGrasas = grasas * 9;
-    const carbohidratos = Math.round((caloriasDiarias - caloriasProteinas - caloriasGrasas) / 4);
-
-    return { proteinas, grasas, carbohidratos };
+  const handleSave = async () => {
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/auth/update_user.php`,
+        editData,
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        setSuccess("Datos actualizados correctamente ✅");
+        setUserData(editData);
+      } else setError(res.data.message);
+    } catch {
+      setError("Error al guardar los cambios.");
+    }
   };
 
-  // Obtener datos del usuario desde el backend
-  useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/auth/user_data.php`)
-      .then(response => {
-        console.log("Datos recibidos:", response.data);
-        if (response.data.error) {
-          setError(response.data.error);
-        } else {
-          setUserData(response.data);
-        }
-      })
-      .catch(err => {
-        console.error("Error al obtener datos:", err);
-        setError("No se pudo cargar la información del usuario.");
-      });
-  }, []);
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/logout.php`,
+        {},
+        { withCredentials: true }
+      );
+    } catch {}
+    navigate("/login"); // Redirige al login tras cerrar sesión
+  };
 
-  if (error) return <div>{error}</div>;
-  if (!userData) return <div>Cargando...</div>;
+  // Si detectamos que no hay sesión, redirigimos al login de forma declarativa
+  if (redirectToLogin) return <Navigate to="/login" replace />;
 
-  const caloriasDiarias = calcularCaloriasDiarias(userData);
-  const { proteinas, grasas, carbohidratos } = calcularMacrosDiarios(userData, caloriasDiarias);
+  if (error) return <div className="text-red-500 p-6">{error}</div>;
+  if (!userData) return <div className="text-gray-300 p-6">Cargando...</div>;
 
   return (
-    <div>
-      <h1>Perfil de Usuario</h1>
-      <p><strong>ID:</strong> {userData.id}</p>
-      <p><strong>Nombre de usuario:</strong> {userData.nombre_usuario}</p>
-      <p><strong>Correo:</strong> {userData.correo}</p>
-      <p><strong>Contraseña:</strong> {userData.contrasena}</p>
-      <p><strong>Edad:</strong> {userData.edad} años</p>
-      <p><strong>Altura:</strong> {userData.altura_cm} cm</p>
-      <p><strong>Peso:</strong> {userData.peso_kg} kg</p>
-      <p><strong>Actividad:</strong> {userData.actividad}</p>
-      <p><strong>Objetivo:</strong> {userData.objetivo}</p>
-      <p><strong>Género:</strong> {userData.genero}</p>
-      <p><strong>Rol:</strong> {userData.rol}</p>
-      <p><strong>Calorías diarias:</strong> {caloriasDiarias} kcal</p>
-      <p><strong>Proteínas diarias:</strong> {proteinas} g</p>
-      <p><strong>Grasas diarias:</strong> {grasas} g</p>
-      <p><strong>Carbohidratos diarios:</strong> {carbohidratos} g</p>
-      <p><strong>Fecha de registro:</strong> {userData.fecha_registro}</p>
+    <div className="min-h-screen bg-[#1e1e1e] text-white flex justify-center py-10">
+      <div className="bg-[#2b2b2b] p-8 rounded-2xl shadow-xl w-[500px]">
+        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">
+          Perfil de Usuario
+        </h2>
+
+        {/* Formulario editable */}
+        <div className="space-y-4">
+          {["nombre_usuario", "correo", "edad", "altura_cm", "peso_kg"].map(
+            (f) => (
+              <div key={f}>
+                <label className="block text-sm mb-1">{f.replace("_", " ")}</label>
+                <input
+                  type={f.includes("edad") || f.includes("altura") || f.includes("peso") ? "number" : "text"}
+                  name={f}
+                  value={editData[f] ?? ""}
+                  onChange={handleChange}
+                  className="w-full p-2 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
+                />
+              </div>
+            )
+          )}
+
+          {/* Selects para actividad, objetivo y género */}
+          {[
+            { name: "actividad", options: ["sedentario","ligero","moderado","intenso","muy_intenso"] },
+            { name: "objetivo", options: ["mantener_peso","bajar_peso","ganar_musculo"] },
+            { name: "genero", options: ["male","female"] }
+          ].map((s) => (
+            <div key={s.name}>
+              <label className="block text-sm mb-1">{s.name}</label>
+              <select
+                name={s.name}
+                value={editData[s.name] || ""}
+                onChange={handleChange}
+                className="w-full p-2 rounded bg-[#1a1a1a] border border-gray-600 focus:border-orange-500 outline-none"
+              >
+                <option value="">Seleccionar...</option>
+                {s.options.map((o) => (
+                  <option key={o} value={o}>{o}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+
+        {/* Mensajes */}
+        {error && <p className="text-red-500 mt-3">{error}</p>}
+        {success && <p className="text-green-500 mt-3">{success}</p>}
+
+        {/* Botones */}
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={handleSave}
+            className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded font-semibold transition"
+          >
+            Guardar Cambios
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded font-semibold transition"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Profile;
+}
