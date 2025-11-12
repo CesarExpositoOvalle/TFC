@@ -23,7 +23,6 @@ $result = $stmt->get_result();
 if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
-    // Calcular calorías y macros
     $tdee = 0;
     $proteinas = 0;
     $grasas = 0;
@@ -37,12 +36,12 @@ if ($result && $result->num_rows > 0) {
     $objetivo = $row['objetivo'];
 
     if ($peso && $altura && $edad && $genero) {
-        // BMR usando Mifflin-St Jeor
+        
         $bmr = $genero === "male" 
             ? 10 * $peso + 6.25 * $altura - 5 * $edad + 5
             : 10 * $peso + 6.25 * $altura - 5 * $edad - 161;
 
-        // Factor de actividad
+        
         $actividad_factor = [
             "sedentario" => 1.2,
             "ligero" => 1.375,
@@ -52,13 +51,13 @@ if ($result && $result->num_rows > 0) {
         ];
         $tdee = $bmr * ($actividad_factor[$actividad] ?? 1.2);
 
-        // Ajustar por objetivo
+        
         if ($objetivo === "bajar_peso") $tdee -= 500;
         if ($objetivo === "ganar_musculo") $tdee += 300;
 
-        // Macronutrientes aproximados
-        $proteinas = round($peso * 2); // 2g por kg de peso
-        $grasas = round($tdee * 0.25 / 9); // 25% calorías de grasa
+        
+        $proteinas = round($peso * 2); 
+        $grasas = round($tdee * 0.25 / 9); 
         $carbohidratos = round(($tdee - ($proteinas * 4 + $grasas * 9)) / 4);
     }
 

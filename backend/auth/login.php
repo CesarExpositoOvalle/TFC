@@ -32,11 +32,9 @@ if (!$user || !password_verify($password, $user["contrasena"])) {
     exit;
 }
 
-// Guardar sesión
 $_SESSION["user_id"] = $user["id"];
 $_SESSION["username"] = $user["nombre_usuario"];
 
-// Cookie “recordarme” (para que React pueda leerla, httponly=false)
 if ($remember) {
     setcookie("remember_email", $email, time() + (86400 * 30), "/", "", false, false);
 }

@@ -1,15 +1,14 @@
 <?php
-// filepath: /C:/Users/demxo/Desktop/TFC/TFC/backend/api/recipes.php
 
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Cache-Control, Authorization");
-header("Cache-Control: no-cache, must-revalidate"); // Deshabilitar caché
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Fecha en el pasado
+header("Cache-Control: no-cache, must-revalidate"); 
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit(0); // Stop further processing for OPTIONS
+    exit(0); 
 }
 
 define('SPOONACULAR_API_KEY', '51b42182d1fa49919435b66da6eb1172');

@@ -1,89 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=Shrikhand&display=swap');
-
+/* Contenedor principal de la tarjeta */
 .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    overflow: hidden;
-    width: 100%;
-    height: 400px;
-    background-color: #333;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 300px; /* ajusta según necesites */
+  height: 400px; /* altura fija */
+  background-color: #333;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
 }
 
+/* Efecto al pasar el ratón por toda la tarjeta */
 .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.15), 0 4px 6px rgba(0,0,0,0.1);
 }
 
+/* Imagen del plato, ocupa el 60% de la tarjeta */
 .card-img {
-    width: 100%;
-    height: 60%;
-    object-fit: cover;
+  width: 100%;
+  height: 60%;
+  object-fit: cover;
 }
 
+/* Pie de la tarjeta que contiene título y macros */
+.card-footer {
+  position: relative;
+  width: 100%;
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.6); /* color inicial semi-transparente */
+  transition: background-color 0.3s ease;
+}
+
+/* Cuando el cursor está sobre cualquier parte de la tarjeta */
+.card:hover .card-footer {
+  background-color: rgba(0,0,0,0.9); /* se oscurece */
+}
+
+/* Título de la tarjeta */
 .card-title {
-    font-family: 'Shrikhand', cursive;
-    font-size: 2vw;
-    margin: 8px 16px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    color: white;
-    width: 100%;
-    overflow: hidden;
-    white-space: normal;
-    word-wrap: break-word;
-    text-shadow: #333 4px 4px 4px;
-    text-transform: uppercase;
+  font-family: 'Shrikhand', cursive;
+  font-size: clamp(1rem, 2vw, 1.5rem); /* se adapta al contenedor */
+  color: white;
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1.1em;
+  word-break: break-word;
 }
 
+/* Información de macros */
 .card-info {
-    font-family: 'Shrikhand', cursive;
-    font-size: 1rem;
-    color: white;
-    text-align: center;
-    padding: 16px;
-    position: absolute;
-    bottom: 0; 
-    left: 0;
-    width: 100%;
-    height: 32%; 
-    background-color: rgba(0, 0, 0, 0.9); 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    grid-template-rows: repeat(2, auto); 
-    justify-items: start; 
-    align-items: center; 
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  display: flex;
+  gap: 12px;
+  opacity: 0; /* inicialmente invisible */
+  transition: opacity 0.3s ease;
+  flex-wrap: wrap; /* permite varias líneas si es necesario */
+  justify-content: center;
 }
 
-.card-info div {
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    gap: 4px; 
-}
-
-.card-info div span:first-child {
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.card-info div span:last-child {
-    font-size: 1rem;
-}
-
+/* Mostrar información al pasar el ratón por cualquier parte de la tarjeta */
 .card:hover .card-info {
-    opacity: 1;
+  opacity: 1;
+}
+
+/* Cada bloque de macro (ícono + valor) */
+.card-info div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ícono de la macro */
+.card-info div span:first-child {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Valor de la macro */
+.card-info div span:last-child {
+  font-size: clamp(0.8rem, 1.5vw, 1rem); /* se adapta al contenedor */
+  line-height: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -12,32 +12,34 @@ function Card({ id, title, image, macros }) {
 
   return (
     <div className="card" onClick={handleClick}>
-      <img 
-        src={image || noImage} 
-        alt={title} 
-        className="card-img" 
-        onError={(e) => { e.target.onerror = null; e.target.src = noImage; }} 
-      />
-      <h1 className="card-title">{title}</h1>
-      <div className="card-info">
-        <div>
-          <span>🔥</span>
-          <span>{macros.calories}</span>
-        </div>
-        <div>
-          <span>🍖</span>
-          <span>{macros.protein}</span>
-        </div>
-        <div>
-          <span>🥬</span>
-          <span>{macros.carbs}</span>
-        </div>
-        <div>
-          <span>🧈</span>
-          <span>{macros.fats}</span>
-        </div>
+  <img 
+    src={image || noImage} 
+    alt={title} 
+    className="card-img" 
+    onError={(e) => { e.target.onerror = null; e.target.src = noImage; }} 
+  />
+  <div className="card-footer">
+    <h1 className="card-title">{title}</h1>
+    <div className="card-info">
+      <div>
+        <span>🔥</span>
+        <span>{macros.calories}</span>
+      </div>
+      <div>
+        <span>🍖</span>
+        <span>{macros.protein}</span>
+      </div>
+      <div>
+        <span>🥬</span>
+        <span>{macros.carbs}</span>
+      </div>
+      <div>
+        <span>🧈</span>
+        <span>{macros.fats}</span>
       </div>
     </div>
+  </div>
+</div>
   );
 }
 

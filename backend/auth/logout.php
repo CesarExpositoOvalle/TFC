@@ -9,10 +9,8 @@ header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit(); }
 
-// Vaciar sesión
 $_SESSION = [];
 
-// Borrar cookie de sesión (PHPSESSID)
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -21,7 +19,7 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// No borrar remember_email
+
 session_destroy();
 
 echo json_encode([

@@ -32,7 +32,7 @@ export default function Register() {
       const data = await res.json();
       if (data.success) {
         setSuccess(data.message);
-        setTimeout(() => navigate("/login"), 1500); // redirige al login
+        setTimeout(() => navigate("/login"), 1500); 
       } else {
         setError(data.message || "Error al registrar usuario.");
       }
@@ -77,7 +77,6 @@ export default function Register() {
           </button>
         </form>
 
-        {/* Enlace a Login */}
         <p className="text-center text-sm mt-4 text-gray-300">
           Ya tienes cuenta?{" "}
           <Link to="/login" className="text-orange-500 hover:underline">
